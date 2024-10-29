@@ -18,12 +18,51 @@ namespace ContosoUniversity.Pages.Students
         {
             _context = context;
         }
+        // Движок Для создания сортировки
+        public string LastNameSort { get; set; }
+        public string FirstNameSort { get; set; }
+        public string DateSort { get; set; }
+        public string CurrentFilter { get; set; }
+        public string CurrentSort { get; set; }
+        
+             
+        public IList<Student> Students { get;set; } = default!;
 
-        public IList<Student> Student { get;set; } = default!;
-
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string sortOrder, string searchString)
         {
-            Student = await _context.Students.ToListAsync();
+            LastNameSort = String.IsNullOrEmpty(sortOrder) ? "last_name_desc":"";//Сортировка по убыванию (Descinding by FirstName)
+            FirstNameSort  = sortOrder == "first_name_asc" ? "first_name_desc" : "first_name_asc";//Сортировка по убыванию (Descinding by LastName)
+            DateSort = sortOrder == "Date" ? "date_desc" : "Date";
+
+            CurrentFilter = searchString;
+
+            IQueryable<Student> students = from s in _context.Students select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                students = students.Where
+                        (
+                               s => s.LastName.Contains(searchString)
+                            || s.FirstName.Contains(searchString)
+                        );
+            }
+
+            switch (sortOrder)
+            {
+                default: students = students.OrderBy(s => s.LastName); break;
+                case "last_name_desc": students = students.OrderByDescending(s => s.LastName); break;
+                
+                case "first_name_asc": students = students.OrderBy(s => s.FirstName); break;
+                case "first_name_desc": students = students.OrderByDescending(s => s.FirstName); break;
+                
+                case "Date": students = students.OrderBy(s => s.EnrollmentDate); break;
+                case "date_desc": students = students.OrderByDescending(s => s.EnrollmentDate); break;
+                
+            }
+            /// //////////////////////////////////////////
+             
+
+            Students = await students.AsNoTracking().ToListAsync();
         }
     }
 }
