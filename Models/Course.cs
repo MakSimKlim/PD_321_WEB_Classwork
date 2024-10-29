@@ -7,6 +7,7 @@ namespace ContosoUniversity.Models
         public int CourseId { get; set; }
         public string Title { get; set; }
         public int Credits { get; set; }
+
         //Navigation property:
         public ICollection<Enrollment> Enrollments { get; set; }    
     }
