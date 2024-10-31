@@ -17,7 +17,7 @@
         Find by name:
         <input type="text" name="SearchString" value="@Model.CurrentFilter"/>
         <input type="submit" value="Search" class="btn btn-primary"/>
-        <a asp-page="./Index">Show everyone</a>
+        <a asp-page="./Index">Reset filter</a>
     </p>
 </div>    
 </form>
@@ -27,17 +27,17 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.LastNameSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.LastNameSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @Html.DisplayNameFor(model => model.Students[0].LastName)
                  </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.LastNameSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.LastNameSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @Html.DisplayNameFor(model => model.Students[0].FirstName)
                  </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort" asp-route-currentFilter="@Model.CurrentFilter">
                     @Html.DisplayNameFor(model => model.Students[0].EnrollmentDate)
                  </a>
             </th>
@@ -45,8 +45,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Students) 
-{
+        @foreach (var item in Model.Students) 
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
@@ -63,6 +63,30 @@
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+@{
+    int pageIndex = Model.Students.PageIndex;
+    int totalPages = Model.Students.TotalPages;
+    string prevDisabled = Model.Students.HasPreviousPage ? "" : "disabled";
+    string nextDisabled = Model.Students.HasNextPage     ? "" : "disabled";
+}
+
+<a 
+    asp-page="./Index" 
+    asp-route-sortOrder="@Model.CurrentSort"
+    asp-route-pageIndex="@(Model.Students.PageIndex - 1)"
+    asp-route-currentFilter="@Model.CurrentFilter"
+    class="btn btn-primary @prevDisabled">
+        Previous
+</a>
+<a 
+    asp-page="./Index" 
+    asp-route-sortOrder="@Model.CurrentSort"
+    asp-route-pageIndex="@(Model.Students.PageIndex + 1)"
+    asp-route-currentFilter="@Model.CurrentFilter"
+    class="btn btn-primary @nextDisabled">
+        Next
+</a>

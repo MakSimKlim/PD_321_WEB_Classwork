@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace ContosoUniversity.Pages.Students
 {
     public class IndexModel : PageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly IConfiguration _configuration;
 
-        public IndexModel(ContosoUniversity.Data.SchoolContext context)
+        public IndexModel(ContosoUniversity.Data.SchoolContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
         // Движок Для создания сортировки
         public string LastNameSort { get; set; }
@@ -24,15 +27,21 @@ namespace ContosoUniversity.Pages.Students
         public string DateSort { get; set; }
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
-        
-             
-        public IList<Student> Students { get;set; } = default!;
 
-        public async Task OnGetAsync(string sortOrder, string searchString)
+
+        //public IList<Student> Students { get;set; } = default!; // замена на public PaginatedLis
+        public PaginatedList<Student> Students { get; set; }
+
+        public async Task OnGetAsync(string sortOrder, string currentFilter, string searchString, int? pageIndex)
         {
+            CurrentSort = sortOrder;
+
             LastNameSort = String.IsNullOrEmpty(sortOrder) ? "last_name_desc":"";//Сортировка по убыванию (Descinding by FirstName)
             FirstNameSort  = sortOrder == "first_name_asc" ? "first_name_desc" : "first_name_asc";//Сортировка по убыванию (Descinding by LastName)
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null) pageIndex = 1;
+            else searchString = currentFilter;
 
             CurrentFilter = searchString;
 
@@ -42,7 +51,7 @@ namespace ContosoUniversity.Pages.Students
             {
                 students = students.Where
                         (
-                               s => s.LastName.Contains(searchString)
+                             s => s.LastName.Contains(searchString)
                             || s.FirstName.Contains(searchString)
                         );
             }
@@ -60,9 +69,10 @@ namespace ContosoUniversity.Pages.Students
                 
             }
             /// //////////////////////////////////////////
-             
 
-            Students = await students.AsNoTracking().ToListAsync();
+            int pageSize = _configuration.GetValue("PageSize", 4);
+            Students = await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageIndex ?? 1, pageSize);
+            //Students = await students.AsNoTracking().ToListAsync();
         }
     }
 }
