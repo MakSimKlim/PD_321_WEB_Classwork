@@ -11,7 +11,7 @@ using ContosoUniversity.Models;
 
 namespace ContosoUniversity.Pages.Courses
 {
-    public class EditModel : PageModel
+    public class EditModel : DepartmentNamePageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
@@ -30,19 +30,20 @@ namespace ContosoUniversity.Pages.Courses
                 return NotFound();
             }
 
-            var course =  await _context.Courses.FirstOrDefaultAsync(m => m.CourseId == id);
+            var course =  await _context.Courses.Include(c => c.Department).FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
                 return NotFound();
             }
             Course = course;
-           ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
+            PopulateDepartmentDropdownList(_context, Course.DepartmentID);
+            //ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        /*public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -68,8 +69,24 @@ namespace ContosoUniversity.Pages.Courses
             }
 
             return RedirectToPage("./Index");
-        }
+        }*/
 
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null) return NotFound();
+
+            Course courseToUpdate = await _context.Courses.FindAsync(id);
+            if (courseToUpdate == null) return NotFound();
+
+            if (await TryUpdateModelAsync<Course>(courseToUpdate, "course", c => c.Credits, c => c.DepartmentID, c => c.Title))
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+
+            }
+            PopulateDepartmentDropdownList(_context, courseToUpdate.DepartmentID);
+            return Page();
+        }
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.CourseId == id);

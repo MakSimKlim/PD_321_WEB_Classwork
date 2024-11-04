@@ -10,7 +10,7 @@ using ContosoUniversity.Models;
 
 namespace ContosoUniversity.Pages.Courses
 {
-    public class CreateModel : PageModel
+    public class CreateModel : DepartmentNamePageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
@@ -21,7 +21,8 @@ namespace ContosoUniversity.Pages.Courses
 
         public IActionResult OnGet()
         {
-        ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
+            PopulateDepartmentDropdownList(_context);// Populate - означает заполнить Dropdown list
+            //ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
             return Page();
         }
 
@@ -31,15 +32,33 @@ namespace ContosoUniversity.Pages.Courses
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            Course emptyCourse = new Course();
+            if (
+                await TryUpdateModelAsync<Course>
+                (
+                   emptyCourse,
+                   "course",
+                   s => s.CourseId, s => s.DepartmentID, s => s.Title, s => s.Credits
+                )
+              )
             {
-                return Page();
+                _context.Courses.Add(emptyCourse);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            _context.Courses.Add(Course);
-            await _context.SaveChangesAsync();
+            PopulateDepartmentDropdownList(_context, emptyCourse.DepartmentID);
+            return Page();
 
-            return RedirectToPage("./Index");
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
+
+            //_context.Courses.Add(Course);
+            //await _context.SaveChangesAsync();
+
+            //return RedirectToPage("./Index");
         }
     }
 }
