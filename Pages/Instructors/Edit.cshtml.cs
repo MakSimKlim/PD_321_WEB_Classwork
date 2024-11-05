@@ -119,8 +119,9 @@ namespace ContosoUniversity.Pages.Instructors
 
             foreach (Course course in _context.Courses)
             {
-                if (selectedCoursesHS.Contains(course.CourseId.ToString()) && !instructorCoursesHS.Contains(course.CourseId))
+                if (selectedCoursesHS.Contains(course.CourseId.ToString())) 
                 {
+                    if(!instructorCoursesHS.Contains(course.CourseId))
                     instructorToUpdate.Courses.Add(course);
                 }
                 else 
