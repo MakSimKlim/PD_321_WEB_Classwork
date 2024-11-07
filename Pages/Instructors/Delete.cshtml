@@ -30,6 +30,45 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Instructor.HireDate)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Instructor.OfficeAssignment)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Instructor.OfficeAssignment.Location)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Instructor.Courses)
+        </dt>
+        <dd class="col-sm-7">
+            <div class="table">
+                <table class="col-md-12">
+                    <tr>
+                        @{
+                            int cnt = 0;
+                            foreach (Models.SchoolViewModels.AssignedCourseData course in Model.AssignedCourseDataList)
+                            {
+                                if (cnt++ % 3 == 0)
+                                {
+                                    @:</tr><tr>    
+                                }
+                                @:<td class="col-md-4">
+                                    <input  type="checkbox"
+                                            name="selectedCourses"
+                                            value="@course.CourseID"
+                                            disabled
+                                            @Html.Raw(course.Assigned ? "checked=\"checked\"":"")
+                                    />
+                                    @course.CourseID @: @course.Title
+
+                                @:</td>
+                            }                                                        
+                        }
+                    </tr>
+                </table>
+            </div>
+        </dd>
+
     </dl>
     
     <form method="post">
