@@ -10,7 +10,7 @@ using ContosoUniversity.Models;
 
 namespace ContosoUniversity.Pages.Instructors
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel : InstructorCoursesPageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
@@ -19,6 +19,7 @@ namespace ContosoUniversity.Pages.Instructors
             _context = context;
         }
 
+        [BindProperty]
         public Instructor Instructor { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -28,7 +29,11 @@ namespace ContosoUniversity.Pages.Instructors
                 return NotFound();
             }
 
-            var instructor = await _context.Instructors.FirstOrDefaultAsync(m => m.ID == id);
+            var instructor = await _context.Instructors
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.Courses)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (instructor == null)
             {
                 return NotFound();
@@ -37,6 +42,7 @@ namespace ContosoUniversity.Pages.Instructors
             {
                 Instructor = instructor;
             }
+            PopulateAssignedCourseData(_context, Instructor);
             return Page();
         }
     }
