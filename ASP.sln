@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity", "Contos
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ASP.Net_Core", "ASP.Net_Core", "{6C2B3AB4-9D95-40B0-A90F-0DF2FE725937}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PD_212_MVC_Classwork", "..\PD_212_MVC_Classwork\PD_212_MVC_Classwork.csproj", "{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{82A1BFDD-4777-4A1B-AB26-810F6C24E81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82A1BFDD-4777-4A1B-AB26-810F6C24E81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82A1BFDD-4777-4A1B-AB26-810F6C24E81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{82A1BFDD-4777-4A1B-AB26-810F6C24E81B} = {6C2B3AB4-9D95-40B0-A90F-0DF2FE725937}
+		{535311F4-8A89-4AFB-BBB5-0E88CC15DFCE} = {6C2B3AB4-9D95-40B0-A90F-0DF2FE725937}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DB8E759-FD60-4F58-9259-4976A6A0BAE1}
